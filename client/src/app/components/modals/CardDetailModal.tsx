@@ -48,7 +48,6 @@ export default function CardDetailModal({ cardId, isOpen, onClose }: CardDetailM
             // Si la carta del backend tiene tcgdexId, usarlo para buscar detalles completos
             if (backendCard.tcgdexId) {
               const tcgdexResponse = await fetch(`https://api.tcgdex.net/v2/en/cards/${backendCard.tcgdexId}`, {
-                credentials: 'include'
               });
               if (tcgdexResponse.ok) {
                 const tcgdexCard = await tcgdexResponse.json();
@@ -65,12 +64,10 @@ export default function CardDetailModal({ cardId, isOpen, onClose }: CardDetailM
         }
         // PASO 2: Buscar directamente en TCGdex (si el ID no es MongoDB o backend falló)
         let externalResponse = await fetch(`https://api.tcgdex.net/v2/en/cards/${cardId}`, {
-          credentials: 'include'
         });
         if (!externalResponse.ok) {
           // INTENTO B: Búsqueda por query param (por si acaso)
           externalResponse = await fetch(`https://api.tcgdex.net/v2/en/cards?id=${cardId}`, {
-            credentials: 'include'
           });
         }
         if (externalResponse.ok) {
