@@ -22,8 +22,8 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const res = await fetch(`${apiUrl}/api/auth/me`, {
+
+        const res = await fetch(`/api/auth/me`, {
           credentials: 'include'
         });
         
@@ -57,8 +57,8 @@ export default function ProfilePage() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const res = await fetch(`${apiUrl}/api/auth/me`, {
+
+      const res = await fetch(`/api/auth/me`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -96,8 +96,8 @@ export default function ProfilePage() {
   };
   const handleLogout = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      await fetch(`${apiUrl}/api/auth/logout`, { method: 'POST' });
+
+      await fetch(`/api/auth/logout`, { method: 'POST' });
       router.push('/login');
     } catch (error) {
       console.error("Error logout:", error);

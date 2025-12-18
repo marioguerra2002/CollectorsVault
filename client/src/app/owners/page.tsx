@@ -118,8 +118,8 @@ export function CollectionContent() {
     // Obtener el usuario logueado para poder excluir sus propias cartas
     const fetchMe = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const r = await fetch(`${apiUrl}/api/auth/me`, { credentials: 'include' });
+
+        const r = await fetch(`/api/auth/me`, { credentials: 'include' });
         if (r.ok) {
           const d = await r.json();
           setCurrentUserId(d._id || null);

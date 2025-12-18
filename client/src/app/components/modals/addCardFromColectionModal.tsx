@@ -42,8 +42,8 @@ export default function AddCardFromCollectionModal({
       setLoading(true);
       setError('');
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const response = await fetch(`${apiUrl}/api/collection`, {
+
+        const response = await fetch(`/api/collection`, {
           credentials: 'include'
         });
         if (response.ok) {

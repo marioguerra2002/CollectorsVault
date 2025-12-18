@@ -48,8 +48,8 @@ export default function ExchangesPage() {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const response = await fetch(`${apiUrl}/api/auth/me`, { credentials: 'include' });
+
+        const response = await fetch(`/api/auth/me`, { credentials: 'include' });
         if (response.ok) {
           const userData = await response.json();
           setCurrentUserId(userData._id);
@@ -68,8 +68,8 @@ export default function ExchangesPage() {
     if (!currentUserId) return;
     const fetchConversations = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const response = await fetch(`${apiUrl}/api/conversations`, {
+
+        const response = await fetch(`/api/conversations`, {
           credentials: 'include'
         });
         if (response.ok) {

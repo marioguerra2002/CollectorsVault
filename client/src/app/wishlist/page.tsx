@@ -52,8 +52,8 @@ export default function WishlistPage() {
   const loadWishlist = async () => {
     try {
       // LLAMADA AL BACKEND: GET /api/wishlist
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const response = await fetch(`${apiUrl}/api/wishlist`, {
+
+      const response = await fetch(`/api/wishlist`, {
         credentials: 'include'
       });
       if (response.status === 401) {
@@ -100,8 +100,8 @@ export default function WishlistPage() {
   const handleAddWish = async (cardApiId: string) => {
     try {
       // LLAMADA AL BACKEND: POST /api/wishlist
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const res = await fetch(`${apiUrl}/api/wishlist`, {
+
+      const res = await fetch(`/api/wishlist`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cardId: cardApiId }), // Enviamos solo el ID

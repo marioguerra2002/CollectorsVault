@@ -17,8 +17,8 @@ export default function ProfileCard() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const res = await fetch(`${apiUrl}/api/auth/me`, {
+
+        const res = await fetch(`/api/auth/me`, {
           credentials: 'include'
         });
         
@@ -50,8 +50,8 @@ export default function ProfileCard() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';  
-      const res = await fetch(`${apiUrl}/api/auth/me`, {
+
+      const res = await fetch(`/api/auth/me`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -84,8 +84,8 @@ export default function ProfileCard() {
   // --- FUNCIÓN DE CERRAR SESIÓN (LOGOUT) ---
   const handleLogout = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      await fetch(`${apiUrl}/api/auth/logout`, { method: 'POST', credentials: 'include' });
+
+      await fetch(`/api/auth/logout`, { method: 'POST', credentials: 'include' });
       
       // No importa si la petición falla, redirigimos igual para "sacar" al usuario
       router.push('/login');

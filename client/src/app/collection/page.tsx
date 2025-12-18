@@ -74,8 +74,7 @@ export function CollectionContent() {
   };
   const fetchTargetUsername = async (userId: string) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const res = await fetch(`${apiUrl}/api/users/${userId}`, {
+      const res = await fetch('/api/users/${userId}', {
         credentials: 'include'
       });
       if (res.ok) {
@@ -90,8 +89,7 @@ export function CollectionContent() {
   };
   const reloadCards = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const url = targetUserId ? `${apiUrl}/api/collection?userId=${targetUserId}` : `${apiUrl}/api/collection`;
+      const url = targetUserId ? `/api/collection?userId=${targetUserId}` : `/api/collection`;
       const response = await fetch(url, {
         credentials: 'include'
       });
@@ -143,8 +141,7 @@ export function CollectionContent() {
       return;
     }
     // Llamar al endpoint de filtrado
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-    const url = `${apiUrl}/api/collection/filter?${params.toString()}`;
+    const url = `/api/collection/filter?${params.toString()}`;
     fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -178,8 +175,8 @@ export function CollectionContent() {
     const fetchCards = async () => {
       try {
         setLoading(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const url = targetUserId ? `${apiUrl}/api/collection?userId=${targetUserId}` : `${apiUrl}/api/collection`;
+
+        const url = targetUserId ? `/api/collection?userId=${targetUserId}` : `/api/collection`;
         const response = await fetch(url, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -239,8 +236,8 @@ export function CollectionContent() {
     }
     try {
       // LLAMAMOS AL ENDPOINT PATCH
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const res = await fetch(`${apiUrl}/api/cards/${cardId}/tradable`, {
+
+      const res = await fetch(`/api/cards/${cardId}/tradable`, {
         method: 'PATCH', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -266,8 +263,8 @@ export function CollectionContent() {
   // --- HANDLER DE AÑADIR CARTA (RECIBE CONDICIÓN Y TRADABLE) ---
   const handleAddCard = async (cardApiId: string, category: string, condition: string, isTradable: boolean) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const res = await fetch(`${apiUrl}/api/cards`, {
+
+      const res = await fetch(`/api/cards`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -296,8 +293,8 @@ export function CollectionContent() {
     const cardToDelete = cards.find(c => c.id === idString);
     const category = cardToDelete?.category || 'Pokemon';
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const res = await fetch(`${apiUrl}/api/cards/${idString}`, { 
+
+      const res = await fetch(`/api/cards/${idString}`, { 
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category: category }) ,
