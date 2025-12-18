@@ -50,11 +50,16 @@ export default function AppHeader() {
     fetchUserAvatar();
   }, []); // Se ejecuta solo una vez al cargar el header
   // --- INICIALIZAR SOCKET.IO ---
+  // --- INICIALIZAR SOCKET.IO ---
   useEffect(() => {
     if (!currentUserId) return;
     
-    const socketInstance = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000', {
+    // CAMBIO IMPORTANTE: Ponemos la URL directa de tu backend seguro (HTTPS)
+    // Esto evita que intente conectarse a localhost y bloquee la web
+    const socketInstance = io('https://collectorsvault.onrender.com', {
       withCredentials: true,
+      transports: ['polling', 'websocket'], // Añadimos esto para máxima compatibilidad
+      secure: true, // Forzamos modo seguro
     });
     
     const handleConnect = () => {
