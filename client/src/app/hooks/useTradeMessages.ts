@@ -8,10 +8,10 @@ export function useTradeMessages() {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key?.startsWith('trade_last_message_')) {
         const userId = e.key.replace('trade_last_message_', '');
-        if (e.newValue) {
+        if (e.newValue != null) {
           setMessages(prev => ({
             ...prev,
-            [userId]: JSON.parse(e.newValue)
+            [userId]: JSON.parse(e.newValue as string)
           }));
         } else {
           setMessages(prev => ({
