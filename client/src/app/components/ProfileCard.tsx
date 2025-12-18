@@ -2,8 +2,11 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from '@/hooks/useTranslations';
+
 export default function ProfileCard() {
   const router = useRouter();
+  const t = useTranslations();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [user, setUser] = useState({
