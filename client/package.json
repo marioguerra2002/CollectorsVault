@@ -10,9 +10,9 @@
     "test:e2e": "mocha tests/*.spec.js --timeout 60000"
   },
   "dependencies": {
-    "next": "16.0.1",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "next": "^16.0.10",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "socket.io-client": "^4.8.1",
     "styled-components": "^6.1.19"
   },
