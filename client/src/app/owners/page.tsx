@@ -7,6 +7,7 @@ import AppHeader from '@/app/components/collection/AppHeader';
 import Loader from '../components/ui/loader';
 import NotFoundError from '../components/ui/notfoundError';
 import { useTranslations } from '@/hooks/useTranslations';
+import { Suspense } from 'react';
 // Definimos qué esperamos recibir del backend (Carta + Dueño)
 interface Owner {
   _id: string;
@@ -24,7 +25,7 @@ interface SearchResult {
   condition?: string;
   isTradable?: boolean;
 }
-export default function OwnersSearchPage() {
+export function CollectionContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q'); // Leemos el texto de búsqueda de la URL
   const router = useRouter();
@@ -266,4 +267,14 @@ export default function OwnersSearchPage() {
       </main>
     </div>
   );
+}
+
+export default function OwnersSearchPage() {
+  return (
+    // El fallback es lo que se ve mientras se leen los parámetros de la URL
+    <Suspense fallback={<div className="flex justify-center p-10">Cargando resultados...</div>}>
+      <CollectionContent />
+    </Suspense>
+  );
+  
 }
