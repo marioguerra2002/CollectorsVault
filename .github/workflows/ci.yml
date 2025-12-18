@@ -1,0 +1,86 @@
+name: CI Pipeline (Vitest & Selenium)
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [dev]
+jobs:
+  # --- JOB 1: TEST BACKEND (Unitarios) ---
+  backend-tests:
+    name: Backend Unit Tests
+    runs-on: ubuntu-latest
+    # Servicio MongoDB temporal para que el backend pueda conectarse
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+    env:
+      MONGODB_URI: mongodb://localhost:27017/test_db 
+      JWT_SECRET: "secreto_temporal_para_ci"
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install
+      - run: bun run test
+  # --- JOB 2: TEST E2E (Frontend + Backend Integration) ---
+  e2e-tests:
+    name: E2E Selenium Tests
+    runs-on: ubuntu-latest
+    # Servicio MongoDB temporal también para los tests E2E
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+    env:
+      MONGODB_URI: mongodb://localhost:27017/e2e_db
+      JWT_SECRET: "secreto_temporal_para_ci"
+      PORT: 5000
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+      - name: Instalar Bun
+        uses: oven-sh/setup-bun@v1
+      # 1. Instalar dependencias (Server y Client)
+      - name: Instalar Dependencias
+        run: |
+          cd server && bun install
+          cd ../client && bun install
+      # 2. CONSTRUIR EL FRONTEND (Build) 
+      # Esto es vital para detectar errores de compilación y para que arranque rápido
+      - name: Build Frontend
+        working-directory: ./client
+        run: bun run build
+      # 3. Arrancar Servidores y Ejecutar Tests
+      - name: Start Servers & Run Selenium
+        run: |
+          # Arrancar Backend en puerto 5000
+          cd server
+          # Forzamos el puerto 5000 explícitamente para el backend
+          PORT=5000 nohup bun run dev > ../backend.log 2>&1 &
+          echo "Backend iniciando en puerto 5000..."
+          # Arrancar Frontend en puerto 3000
+          cd ../client
+          # Forzamos el puerto 3000 para Next.js
+          PORT=3000 nohup bun run start > ../frontend.log 2>&1 &
+          echo "Frontend iniciando en puerto 3000..."
+          # Instalar herramientas de test
+          npm install selenium-webdriver chromedriver mocha wait-on
+          # Esperar a los puertos correctos
+          echo "Esperando a localhost:3000 y localhost:5000..."
+          npx wait-on http://localhost:3000 http://localhost:5000 --timeout 120000
+          echo "¡Sistemas listos! Ejecutando Selenium..."
+          npx mocha tests/wishlistandlogin20.spec.js --timeout 60000
+      # 4. Mostrar logs si algo falla (Para debuggear)
+      - name: Show Logs on Failure
+        if: failure()
+        run: |
+          echo "=== LOGS DEL BACKEND ==="
+          cat backend.log
+          echo ""
+          echo "=== LOGS DEL FRONTEND ==="
+          cat frontend.log
