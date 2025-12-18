@@ -76,7 +76,7 @@ app.use(errorHandler);
 const httpServer = http.createServer(app);
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:5173', process.env.CLIENT_ORIGIN || 'http://localhost:3000'],
+    origin: ['http://localhost:3000', 'http://localhost:5173', 'https://collectorsvault.vercel.app', process.env.CLIENT_ORIGIN || 'http://localhost:3000'],
     credentials: true,
   },
 });
