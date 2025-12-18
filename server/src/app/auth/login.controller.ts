@@ -15,10 +15,11 @@ const generateTokenAndSetCookie = (res: Response, userId: string) => {
     expiresIn: '1d', // El token expira en 1 día
   });
   // Seteamos la cookie
+  const isProduction = process.env.NODE_ENV !== 'development';
   res.cookie('jwt', token, {
     httpOnly: true, // La cookie no es accesible por JavaScript en el cliente (seguridad XSS)
-    secure: process.env.NODE_ENV !== 'development', // Usar 'secure' (HTTPS) solo en producción
-    sameSite: 'strict', // Mitigación de ataques CSRF
+    secure: isProduction, // Usar 'secure' (HTTPS) solo en producción
+    sameSite: isProduction ? 'none' : 'lax', // Mitigación de ataques CSRF
     maxAge: 1 * 24 * 60 * 60 * 1000, // 1 día en milisegundos
   });
 };
