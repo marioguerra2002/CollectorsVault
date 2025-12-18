@@ -20,9 +20,13 @@ router.put('/me', protect, updateProfile);
 // POST /api/auth/logout
 router.post('/logout', (req: Request, res: Response) => {
   // Limpiamos la cookie 'jwt' enviando una cookie expirada
+  const isProduction = process.env.NODE_ENV !== 'development';
   res.cookie('jwt', '', {
     httpOnly: true,
     expires: new Date(0), // Expira inmediatamente
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+
   });
   res.status(200).json({ message: 'Sesión cerrada exitosamente' });
 });

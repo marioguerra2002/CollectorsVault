@@ -23,6 +23,7 @@ import type { IChatSocketMessage } from './app/interface/IChatSocketMessage';
 dotenv.config();
 connectDB();
 const app = express();
+app.set('trust proxy', 1); // Si estás detrás de un proxy (ej. Heroku, Vercel)
 const PORT = process.env.PORT || 5000;
 
 /**

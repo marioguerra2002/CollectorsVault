@@ -429,7 +429,7 @@ export function CollectionContent() {
 }
 export default function CollectionPage() {
   return (
-    <Suspense fallback={<div className="flex justify-center p-10">  </div>}>
+    <Suspense fallback={<div className="flex justify-center p-10"> <Loader /> </div>}>
       <CollectionContent />
     </Suspense>
     

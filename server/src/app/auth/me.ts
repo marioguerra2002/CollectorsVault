@@ -15,6 +15,7 @@ export const getMe = asyncHandler(async (req: Request, res: Response) => {
       email: user.email,
       // Si no tiene imagen, usamos una carta de Pokémon por defecto
       profileImageUrl: user.profileImageUrl || 'https://images.pokemontcg.io/base1/4.png',
+      
     });
   } else {
     res.status(404);
