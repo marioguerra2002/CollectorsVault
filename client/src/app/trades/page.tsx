@@ -1,5 +1,6 @@
 'use client';
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useTranslations } from '@/hooks/useTranslations';
 import AppHeader from '@/app/components/collection/AppHeader';
 import TradesSidebar from '../components/trades/TradesSidebar';
 import TradesDetail from '../components/trades/TradesDetail';
@@ -13,6 +14,7 @@ interface ChatUser {
   lastMessage?: string;
 }
 export default function ExchangesPage() {
+  const t = useTranslations();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
