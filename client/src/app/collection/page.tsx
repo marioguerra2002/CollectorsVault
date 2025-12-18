@@ -231,7 +231,7 @@ export function CollectionContent() {
     const cardToUpdate = cards.find(c => c.id === idString);
     const category = cardToUpdate?.category;
     if (!category) {
-      alert("Error: No se pudo determinar el tipo de carta para actualizar.");
+      alert(t('errors.cardTypeError'));
       return;
     }
     try {
@@ -257,7 +257,7 @@ export function CollectionContent() {
       setFilteredCards(prev => prev.map(updateCard));
     } catch (err: any) {
       console.error(err);
-      alert(`Fallo al actualizar el estado: ${err.message}`);
+      alert(`${t('errors.updateStatusError')}: ${err.message}`);
     }
   };
   // --- HANDLER DE AÑADIR CARTA (RECIBE CONDICIÓN Y TRADABLE) ---
@@ -277,14 +277,14 @@ export function CollectionContent() {
       });
       if (!res.ok) {
         const errorData = await res.json();
-        alert(`Error: ${errorData.message}`);
+        alert(`${t('common.error')}: ${errorData.message}`);
         return;
       }
-      alert("¡Carta añadida a tu colección!");
+      alert(t('errors.cardAddedSuccess'));
       await reloadCards(); 
     } catch (error) {
       console.error(error);
-      alert("Error de conexión");
+      alert(t('errors.connectionError'));
     }
   };
   const handleRemove = async (cardId: string | number) => {
@@ -309,7 +309,7 @@ export function CollectionContent() {
       setFilteredCards(prev => prev.filter(c => c.id !== idString));
     } catch (err) {
       console.error(err);
-      alert(`No se pudo eliminar. ${err instanceof Error ? err.message : 'Error desconocido'}`);
+      alert(`${t('errors.deleteCardError')}. ${err instanceof Error ? err.message : t('errors.somethingWentWrong')}`);
     }
   };
   if (loading) return <Loader />; // PRIMERA VERIFICACIÓN DE CARGA/ERROR

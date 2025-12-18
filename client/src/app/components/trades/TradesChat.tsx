@@ -40,12 +40,15 @@ export default function TradesChat({
   const [isLocked, setIsLocked] = useState<boolean>(lockedProp);
   const [lockedReason, setLockedReason] = useState<'accepted' | 'deleted' | null>(lockReason || null);
   const { saveMessage } = useTradeMessages();
+  
   useEffect(() => {
     setIsLocked(!!lockedProp);
   }, [lockedProp]);
+  
   useEffect(() => {
     setLockedReason(lockReason || null);
   }, [lockReason]);
+  
   // Cargar mensajes previos desde la BD al montar
   useEffect(() => {
     if (!currentUserId || !userId || !roomId) return;
@@ -82,35 +85,42 @@ export default function TradesChat({
     };
     loadConversation();
   }, [userId, currentUserId, roomId, onLocked]);
+  
   // Inicializar Socket.IO o usar el externo
   useEffect(() => {
-    let socketInstance: Socket;
-    if (externalSocket) {
-      // Usar el socket externo si está disponible
+    let socketInstance: Socket | null = null;
+    
+    if (externalSocket && externalSocket.connected) {
+      // Usar el socket externo si está disponible y conectado
       socketInstance = externalSocket;
       setSocket(socketInstance);
       // Unirse a la sala de este chat
       if (roomId) {
         socketInstance.emit('trade:join', { roomId });
       }
-    } else {
+    } else if (!externalSocket) {
       // Crear un nuevo socket si no hay socket externo (fallback)
       socketInstance = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000', {
         withCredentials: true,
       });
       socketInstance.on('connect', () => {
         if (roomId) {
-          socketInstance.emit('trade:join', { roomId });
+          socketInstance?.emit('trade:join', { roomId });
         }
       });
       setSocket(socketInstance);
     }
-    socketInstance.on('trade:sync', (msg: any) => {
+    
+    if (!socketInstance) return;
+    
+    // Listener para mensajes en la sala
+    const handleTradeSync = (msg: any) => {
       const chatMessage = {
         ...msg,
         id: msg.id || `${Date.now()}-${Math.random()}`,
         isMe: msg.fromUserId === currentUserId
       };
+      
       if (msg.kind === 'system') {
         const reason = (msg.payload as any)?.reason;
         setIsLocked(true);
@@ -119,29 +129,32 @@ export default function TradesChat({
           onLocked(reason);
         }
       }
+      
       // Evitar duplicados verificando si ya existe
       setMessages(prev => {
         const exists = prev.find(m => m.createdAt === msg.createdAt && m.fromUserId === msg.fromUserId);
         if (exists) {
           return prev;
         }
-        const newMessages = [...prev, chatMessage];
-        // El mensaje ya se guardó en BD desde socket.io
-        // No necesitamos guardar en localStorage nuevamente
-        return newMessages;
+        return [...prev, chatMessage];
       });
+      
       // Guardar el último mensaje usando el hook (para sidebar)
       saveMessage(userId, chatMessage);
+      
       if (msg.kind === 'proposal' && msg.fromUserId !== currentUserId) {
         if (msg.payload && onProposalReceived) {
           onProposalReceived(msg.payload);
         }
       }
-    });
-    setSocket(socketInstance);
+    };
+    
+    socketInstance.on('trade:sync', handleTradeSync);
+    
     return () => {
+      socketInstance?.off('trade:sync', handleTradeSync);
       // Solo desconectar si es un socket local (no el externo)
-      if (!externalSocket) {
+      if (!externalSocket && socketInstance) {
         socketInstance.disconnect();
       }
     };

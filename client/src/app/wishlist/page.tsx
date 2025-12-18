@@ -109,7 +109,7 @@ export default function WishlistPage() {
       });
       if (!res.ok) {
         const errorData = await res.json();
-        alert(`Error: ${errorData.message}`);
+        alert(`${t('common.error')}: ${errorData.message}`);
         return;
       }
       alert(t('wishlist.cardAdded'));

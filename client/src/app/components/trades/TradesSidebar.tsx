@@ -42,7 +42,7 @@ export default function TradesSidebar({ users, loading, error, selectedUserId, o
         onUserDeleted?.(userId);
       } else {
         console.error(`❌ No se pudo eliminar la conversación`);
-        alert('Error al eliminar la conversación. Intenta de nuevo.');
+        alert(t('errors.connectionError'));
       }
       setDeletingUserId(null);
     }

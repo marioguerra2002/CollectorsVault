@@ -230,7 +230,8 @@
     "newProposal": "New proposal",
     "acceptProposal": "Accept proposal",
     "deleteProposal": "Delete proposal",
-    "unknownUser": "Unknown user"
+    "unknownUser": "Unknown user",
+    "conversationDeleted": "The conversation has been deleted by the other user"
   },
   "profile": {
     "myProfile": "My Profile",
@@ -291,6 +292,14 @@
     "notFound": "⚠️",
     "loading": "Loading...",
     "tryAgain": "Try again",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "cardAddedSuccess": "Card added to your collection!",
+    "cardDeletedSuccess": "Card deleted successfully!",
+    "cardTypeError": "Error: Could not determine card type to update.",
+    "updateStatusError": "Failed to update status",
+    "connectionError": "Connection error",
+    "deleteCardError": "Could not delete card",
+    "profileUpdatedSuccess": "Profile updated successfully",
+    "profileUpdateError": "Error updating profile"
   }
 }

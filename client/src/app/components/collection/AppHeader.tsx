@@ -52,18 +52,27 @@ export default function AppHeader() {
   // --- INICIALIZAR SOCKET.IO ---
   useEffect(() => {
     if (!currentUserId) return;
+    
     const socketInstance = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000', {
       withCredentials: true,
     });
-    socketInstance.on('connect', () => {
+    
+    const handleConnect = () => {
       socketInstance.emit('user:subscribe', { userId: currentUserId });
-    });
-    // Escuchar nuevos mensajes para mostrar notificación
-    socketInstance.on('trade:sync', (msg: any) => {
+    };
+    
+    const handleTradeSync = (msg: any) => {
       setHasNotifications(true);
-    });
+    };
+    
+    socketInstance.on('connect', handleConnect);
+    socketInstance.on('trade:sync', handleTradeSync);
+    
     setSocket(socketInstance);
+    
     return () => {
+      socketInstance.off('connect', handleConnect);
+      socketInstance.off('trade:sync', handleTradeSync);
       socketInstance.disconnect();
     };
   }, [currentUserId]);

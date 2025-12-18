@@ -70,13 +70,13 @@ export default function ProfileCard() {
         setUser(updatedUser);
         setFormData(updatedUser);
         setIsEditing(false);
-        alert("¡Perfil actualizado con éxito!");
+        alert(t('errors.profileUpdatedSuccess'));
       } else {
-        alert(data.message || "Error al actualizar el perfil");
+        alert(data.message || t('errors.profileUpdateError'));
       }
     } catch (error) {
       console.error("Error al guardar:", error);
-      alert("Error de conexión al guardar los cambios.");
+      alert(t('errors.connectionError'));
     } finally {
       setIsSaving(false);
     }

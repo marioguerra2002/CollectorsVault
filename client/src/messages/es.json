@@ -230,7 +230,8 @@
     "newProposal": "Nueva propuesta",
     "acceptProposal": "Aceptar propuesta",
     "deleteProposal": "Eliminar propuesta",
-    "unknownUser": "Usuario desconocido"
+    "unknownUser": "Usuario desconocido",
+    "conversationDeleted": "La conversación ha sido eliminada por el otro usuario"
   },
   "profile": {
     "myProfile": "Mi Perfil",
@@ -291,6 +292,14 @@
     "notFound": "⚠️",
     "loading": "Cargando...",
     "tryAgain": "Intenta de nuevo",
-    "somethingWentWrong": "Algo salió mal"
+    "somethingWentWrong": "Algo salió mal",
+    "cardAddedSuccess": "¡Carta añadida a tu colección!",
+    "cardDeletedSuccess": "¡Carta eliminada correctamente!",
+    "cardTypeError": "Error: No se pudo determinar el tipo de carta para actualizar.",
+    "updateStatusError": "Fallo al actualizar el estado",
+    "connectionError": "Error de conexión",
+    "deleteCardError": "No se pudo eliminar",
+    "profileUpdatedSuccess": "Perfil actualizado correctamente",
+    "profileUpdateError": "Error al actualizar"
   }
 }

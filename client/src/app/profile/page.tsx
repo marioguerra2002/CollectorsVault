@@ -77,15 +77,15 @@ export default function ProfilePage() {
         setUser(updatedUser);
         setFormData(updatedUser);
         setIsEditing(false);
-        alert("Perfil actualizado correctamente");
+        alert(t('errors.profileUpdatedSuccess'));
         // Recargar para actualizar el Header global también
         window.location.reload(); 
       } else {
-        alert(data.message || "Error al actualizar");
+        alert(data.message || t('errors.profileUpdateError'));
       }
     } catch (error) {
       console.error(error);
-      alert("Error de conexión");
+      alert(t('errors.connectionError'));
     } finally {
       setIsSaving(false);
     }

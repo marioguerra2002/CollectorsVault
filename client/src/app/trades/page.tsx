@@ -119,49 +119,43 @@ export default function ExchangesPage() {
     };
     fetchConversations();
   }, [currentUserId]);
+  
   // Inicializar Socket.IO global
   useEffect(() => {
     if (!currentUserId) return;
+    
     const socketInstance = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000', {
       withCredentials: true,
     });
-    socketInstance.on('connect', () => {
-      // Suscribirse a notificaciones personales
-      if (currentUserId) {
-        socketInstance.emit('user:subscribe', { userId: currentUserId });
-      }
-    });
-    // Escuchar cuando otra conversación es eliminada
-    socketInstance.on('conversation:deleted', (data: any) => {
-      // Si el usuario eliminado era el seleccionado actualmente, deseleccionar
+    
+    const handleConnect = () => {
+      socketInstance.emit('user:subscribe', { userId: currentUserId });
+    };
+    
+    const handleConversationDeleted = (data: any) => {
       if (selectedUserId === data.otherUserId || selectedUserId === data.deletedBy) {
         setSelectedUserId(null);
       }
-      // Eliminar el usuario de la lista de conversaciones
       setUsers(prev => prev.filter(u => u.id !== data.deletedBy && u.id !== data.otherUserId));
-      // Mostrar notificación al usuario
-      alert('La conversación ha sido eliminada por el otro usuario');
-    });
-    // Escuchar mensajes globales para actualizar la lista de usuarios
-    socketInstance.on('trade:sync', async (msg: any) => {
+      alert(t('trades.conversationDeleted'));
+    };
+    
+    const handleTradeSync = async (msg: any) => {
       const otherUserId = msg.fromUserId === currentUserId ? msg.toUserId : msg.fromUserId;
       const lastMessage = msg.kind === 'text' ? msg.payload.text : '📦 Propuesta de intercambio';
-      // Unirse a la sala de este usuario inmediatamente
-      const roomId = [otherUserId, currentUserId].sort().join('_');
-      socketInstance.emit('trade:join', { roomId });
+      
       if (msg.kind === 'system' && msg.payload?.reason && selectedUserIdRef.current === otherUserId) {
         setIsChatLocked(true);
         setLockReason(msg.payload.reason);
       }
-      // Si es una propuesta, automáticamente seleccionar este usuario
+      
       if (msg.kind === 'proposal') {
         setSelectedUserId(otherUserId);
       }
-      // Actualizar o agregar usuario a la lista
+      
       setUsers(prev => {
         const exists = prev.find(u => u.id === otherUserId);
         if (!exists) {
-          // Obtener el username real del backend
           const fetchUsername = async () => {
             try {
               const res = await fetch(`/api/users/${otherUserId}`, {
@@ -169,14 +163,11 @@ export default function ExchangesPage() {
               });
               if (res.ok) {
                 const userData = await res.json();
-                setUsers(p => {
-                  const updated = p.map(u => 
-                    u.id === otherUserId 
-                      ? { ...u, username: userData.username, avatarUrl: userData.profileImageUrl }
-                      : u
-                  );
-                  return updated;
-                });
+                setUsers(p => p.map(u => 
+                  u.id === otherUserId 
+                    ? { ...u, username: userData.username, avatarUrl: userData.profileImageUrl }
+                    : u
+                ));
               }
             } catch (e) {
               console.error('Error fetching username:', e);
@@ -189,7 +180,6 @@ export default function ExchangesPage() {
             lastMessage: lastMessage
           }];
         } else {
-          // Usuario ya existe, actualizar el último mensaje
           return prev.map(u => 
             u.id === otherUserId 
               ? { ...u, lastMessage }
@@ -197,12 +187,22 @@ export default function ExchangesPage() {
           );
         }
       });
-    });
+    };
+    
+    socketInstance.on('connect', handleConnect);
+    socketInstance.on('conversation:deleted', handleConversationDeleted);
+    socketInstance.on('trade:sync', handleTradeSync);
+    
     setSocket(socketInstance);
+    
     return () => {
+      socketInstance.off('connect', handleConnect);
+      socketInstance.off('conversation:deleted', handleConversationDeleted);
+      socketInstance.off('trade:sync', handleTradeSync);
       socketInstance.disconnect();
     };
-  }, [currentUserId]);
+  }, [currentUserId, t]);
+  
   // Unir el socket global a las salas de todos los usuarios activos al seleccionar uno
   useEffect(() => {
     if (!socket || !currentUserId || !selectedUserId) return;

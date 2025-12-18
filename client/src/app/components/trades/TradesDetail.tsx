@@ -437,7 +437,7 @@ export default function TradesDetail({
   const handleSendProposal = useCallback(async () => {
     if (isChatLocked) return;
     if (!currentUser?._id || !localTargetUserId) {
-      alert('Faltan datos para enviar la propuesta');
+      alert(t('trades.missingData'));
       return;
     }
     if (mySelectedCards.length === 0) {
@@ -533,7 +533,7 @@ export default function TradesDetail({
       if (onLocked) onLocked('accepted');
     } catch (error) {
       console.error('Error aceptando propuesta:', error);
-      alert(`Error: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      alert(`${t('common.error')}: ${error instanceof Error ? error.message : t('errors.somethingWentWrong')}`);
     }
   }, [activeProposal, isCurrentUserProposer, localTargetUserId, isChatLocked, onLocked]);
   const handleRejectProposal = useCallback(async () => {

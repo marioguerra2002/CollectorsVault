@@ -77,7 +77,7 @@ export default function CardGrid({ cards, onRemove, onCardClick, onToggleTradabl
                           try {
                             await onToggleTradable(card.id, card.isTradable || false);
                           } catch (error) {
-                            alert('Fallo al actualizar el estado de intercambio.');
+                            alert(t('errors.updateStatusError'));
                           }
                         }}
                         className={`w-full py-1.5 rounded-lg text-xs font-medium transition-colors border ${
