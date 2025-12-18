@@ -27,6 +27,7 @@ interface Card {
   condition?: string;
   isTradable?: boolean;
   category?: string;
+  tcgdexId?: string;
 }
 interface TradeExchangeModalProps {
   isOpen: boolean;
