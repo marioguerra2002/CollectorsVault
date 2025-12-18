@@ -37,7 +37,7 @@ app.use(cookieParser());
  * @desc Configuración de CORS para permitir solicitudes desde el cliente con cookies.
  */
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5173', 'https://collectorsvault.vercel.app', process.env.CLIENT_ORIGIN || 'http://localhost:3000' ],
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'https://collectorsvault-client.onrender.com', process.env.CLIENT_ORIGIN || 'http://localhost:3000' ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
@@ -77,7 +77,7 @@ app.use(errorHandler);
 const httpServer = http.createServer(app);
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:5173', 'https://collectorsvault.vercel.app', process.env.CLIENT_ORIGIN || 'http://localhost:3000'],
+    origin: ['http://localhost:3000', 'http://localhost:5173', 'https://collectorsvault-client.onrender.com', process.env.CLIENT_ORIGIN || 'http://localhost:3000'],
     credentials: true,
   },
 });
