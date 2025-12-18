@@ -6,98 +6,101 @@ import { useRouter, usePathname } from 'next/navigation';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 import NotificationModal from '@/app/components/modals/notificationModal';
 import { useTranslations } from '@/hooks/useTranslations';
-import { io, Socket } from 'socket.io-client';
-// Iconos (idealmente los reemplazarías por iconos reales de 'react-icons')
+// import { io, Socket } from 'socket.io-client'; // YA NO NECESITAS io AQUÍ
+import { socket } from '@/lib/socket'; // <--- Importamos la instancia única
+
+// Iconos...
 const BellIcon = () => <span>🔔</span>;
-const UserIcon = () => <span className="text-2xl">👤</span>; // Fallback por si no hay foto
+const UserIcon = () => <span className="text-2xl">👤</span>;
+
 export default function AppHeader() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null); // Estado para la foto
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [hasNotifications, setHasNotifications] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [socket, setSocket] = useState<Socket | null>(null);
+  
+  // ❌ BORRADO: const [socket, setSocket] = useState<Socket | null>(null); 
+  // Ya no usamos estado para el socket, usamos la variable importada directamente.
+
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations();
+
   const getLinkClass = (path: string) => {
+    // ... (tu lógica de estilos igual) ...
     const isActive = pathname === path;
     const baseClasses = "text-sm font-medium transition-all duration-200 pb-1 border-b-2";
-    if (isActive) {
-      return `${baseClasses} text-white border-blue-500`;
-    } else {
-      return `${baseClasses} text-gray-300 border-transparent hover:text-white hover:border-gray-500`;
-    }
+    return isActive 
+      ? `${baseClasses} text-white border-blue-500` 
+      : `${baseClasses} text-gray-300 border-transparent hover:text-white hover:border-gray-500`;
   };
-  // --- CARGAR FOTO DEL USUARIO AL MONTAR ---
+
+  // --- CARGAR FOTO DEL USUARIO ---
   useEffect(() => {
     const fetchUserAvatar = async () => {
       try {
-        // Hacemos una petición ligera para saber quién es el usuario
-
         const res = await fetch(`/api/auth/me`, { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
-          // Guardamos la URL de la foto (o null si no tiene)
           setAvatarUrl(data.profileImageUrl);
           setCurrentUserId(data._id);
         }
-        // Si falla (ej. no logueado), simplemente no mostramos foto, mostramos icono
       } catch (error) {
         console.error("Error cargando avatar header:", error);
       }
     };
     fetchUserAvatar();
-  }, []); // Se ejecuta solo una vez al cargar el header
-  // --- INICIALIZAR SOCKET.IO ---
-  // --- INICIALIZAR SOCKET.IO ---
+  }, []);
+
+  // --- LÓGICA DEL SOCKET SINGLETON ---
   useEffect(() => {
     if (!currentUserId) return;
-    
-    // CAMBIO IMPORTANTE: Ponemos la URL directa de tu backend seguro (HTTPS)
-    // Esto evita que intente conectarse a localhost y bloquee la web
-    const socketInstance = io('https://collectorsvault.onrender.com', {
-      withCredentials: true,
-      transports: ['polling', 'websocket'], // Añadimos esto para máxima compatibilidad
-      secure: true, // Forzamos modo seguro
-    });
-    
+
+    // 1. Conectamos explícitamente la instancia importada
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    // 2. Definimos manejadores
     const handleConnect = () => {
-      socketInstance.emit('user:subscribe', { userId: currentUserId });
+      console.log("Socket conectado:", socket.id);
+      socket.emit('user:subscribe', { userId: currentUserId });
     };
-    
+
     const handleTradeSync = (msg: any) => {
       setHasNotifications(true);
     };
-    
-    socketInstance.on('connect', handleConnect);
-    socketInstance.on('trade:sync', handleTradeSync);
-    
-    setSocket(socketInstance);
-    
+
+    // 3. Suscripciones (Usamos la variable 'socket' importada)
+    socket.on('connect', handleConnect);
+    socket.on('trade:sync', handleTradeSync);
+
+    // Si ya estaba conectado (porque venimos de otra página), nos suscribimos manual
+    if (socket.connected) {
+      handleConnect();
+    }
+
+    // 4. Limpieza
     return () => {
-      socketInstance.off('connect', handleConnect);
-      socketInstance.off('trade:sync', handleTradeSync);
-      socketInstance.disconnect();
+      socket.off('connect', handleConnect);
+      socket.off('trade:sync', handleTradeSync);
+      // NO desconectamos aquí para mantener la conexión viva al navegar
     };
   }, [currentUserId]);
-  // Marcar como leído cuando se abre el modal
+
+  // ... Resto de manejadores (handleNotificationClick, etc) igual ...
   const handleNotificationClick = () => {
     setIsNotificationModalOpen(true);
-    // No limpiar el badge hasta que se cierre el modal
   };
   const handleNotificationClose = () => {
     setIsNotificationModalOpen(false);
     setHasNotifications(false);
   };
   const handleSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      if (searchTerm.trim()) {
-        // CAMBIO: Redirigir a la página de owners con lo que escribió el usuario
-        // encodeURIComponent es importante por si escribe espacios o símbolos
-        router.push(`/owners?q=${encodeURIComponent(searchTerm)}`);
-        setSearchTerm(''); 
-      }
+    if (event.key === 'Enter' && searchTerm.trim()) {
+       router.push(`/owners?q=${encodeURIComponent(searchTerm)}`);
+       setSearchTerm(''); 
     }
   };
   return (
