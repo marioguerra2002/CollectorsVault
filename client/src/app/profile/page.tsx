@@ -22,7 +22,8 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await fetch('/api/auth/me');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const res = await fetch(`${apiUrl}/api/auth/me`);
         if (res.ok) {
           const data = await res.json();
           const userData = {
@@ -53,7 +54,8 @@ export default function ProfilePage() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const res = await fetch('/api/auth/me', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/auth/me`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -90,7 +92,8 @@ export default function ProfilePage() {
   };
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      await fetch(`${apiUrl}/api/auth/logout`, { method: 'POST' });
       router.push('/login');
     } catch (error) {
       console.error("Error logout:", error);
@@ -103,7 +106,7 @@ export default function ProfilePage() {
       {/* Header Global */}
       <AppHeader />
       {/* Contenido Principal */}
-      <main className="flex-grow w-full max-w-6xl mx-auto p-6 md:p-12">
+      <main className="grow w-full max-w-6xl mx-auto p-6 md:p-12">
         {/* Cabecera de la Sección */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 border-b border-gray-700 pb-6 gap-4">
           <div>

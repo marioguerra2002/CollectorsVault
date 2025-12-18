@@ -74,7 +74,8 @@ export function CollectionContent() {
   };
   const fetchTargetUsername = async (userId: string) => {
     try {
-      const res = await fetch(`/api/users/${userId}`);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/users/${userId}`);
       if (res.ok) {
         const data = await res.json();
         setTargetUsername(data.username);
@@ -87,7 +88,8 @@ export function CollectionContent() {
   };
   const reloadCards = async () => {
     try {
-      const url = targetUserId ? `/api/collection?userId=${targetUserId}` : '/api/collection';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const url = targetUserId ? `${apiUrl}/api/collection?userId=${targetUserId}` : `${apiUrl}/api/collection`;
       const response = await fetch(url);
       if (response.ok) {
         const data = await response.json();
@@ -137,7 +139,8 @@ export function CollectionContent() {
       return;
     }
     // Llamar al endpoint de filtrado
-    const url = `/api/collection/filter?${params.toString()}`;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const url = `${apiUrl}/api/collection/filter?${params.toString()}`;
     fetch(url, {
       method: 'GET',
       credentials: 'include',
@@ -171,7 +174,8 @@ export function CollectionContent() {
     const fetchCards = async () => {
       try {
         setLoading(true);
-        const url = targetUserId ? `/api/collection?userId=${targetUserId}` : '/api/collection';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const url = targetUserId ? `${apiUrl}/api/collection?userId=${targetUserId}` : `${apiUrl}/api/collection`;
         const response = await fetch(url, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
@@ -230,7 +234,8 @@ export function CollectionContent() {
     }
     try {
       // LLAMAMOS AL ENDPOINT PATCH
-      const res = await fetch(`/api/cards/${cardId}/tradable`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/cards/${cardId}/tradable`, {
         method: 'PATCH', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -255,7 +260,8 @@ export function CollectionContent() {
   // --- HANDLER DE AÑADIR CARTA (RECIBE CONDICIÓN Y TRADABLE) ---
   const handleAddCard = async (cardApiId: string, category: string, condition: string, isTradable: boolean) => {
     try {
-      const res = await fetch('/api/cards', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/cards`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -284,7 +290,8 @@ export function CollectionContent() {
     const cardToDelete = cards.find(c => c.id === idString);
     const category = cardToDelete?.category || 'Pokemon';
     try {
-      const res = await fetch(`/api/cards/${idString}`, { 
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/cards/${idString}`, { 
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ category: category }) 
@@ -415,12 +422,9 @@ export function CollectionContent() {
 }
 export default function CollectionPage() {
   return (
-    // El fallback es lo que se ve mientras se leen los parámetros de la URL
-    // <Suspense fallback={<div className="flex justify-center p-10">  </div>}>
-    //   <CollectionContent />
-    // </Suspense>
-    <Suspense fallback={<div className="flex justify-center p-10">Cargando colección...</div>}>
+    <Suspense fallback={<div className="flex justify-center p-10">  </div>}>
       <CollectionContent />
     </Suspense>
+    
   );
 }

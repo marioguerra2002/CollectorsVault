@@ -34,7 +34,8 @@ export default function AppHeader() {
     const fetchUserAvatar = async () => {
       try {
         // Hacemos una petición ligera para saber quién es el usuario
-        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const res = await fetch(`${apiUrl}/api/auth/me`, { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
           // Guardamos la URL de la foto (o null si no tiene)

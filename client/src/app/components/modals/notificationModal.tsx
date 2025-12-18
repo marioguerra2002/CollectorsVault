@@ -32,7 +32,8 @@ export default function NotificationModal({
     if (!currentUserId) return;
     try {
       setLoading(true);
-      const response = await fetch('/api/conversations', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/conversations`, {
         credentials: 'include'
       });
       if (response.ok) {

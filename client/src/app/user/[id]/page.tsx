@@ -93,7 +93,8 @@ export default function CollectionPage() {
   };
   const fetchCurrentUser = async () => {
     try {
-      const res = await fetch('/api/auth/me', { credentials: 'include' }); 
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/auth/me`, { credentials: 'include' }); 
       if (res.ok) {
         const data = await res.json();
         setCurrentUserId(data._id);
@@ -267,7 +268,8 @@ export default function CollectionPage() {
   // --- HANDLER DE AÑADIR CARTA (RECIBE CONDICIÓN Y TRADABLE) ---
   const handleAddCard = async (cardApiId: string, category: string, condition: string, isTradable: boolean) => {
     try {
-      const res = await fetch('/api/cards', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/cards`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

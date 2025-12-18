@@ -302,7 +302,8 @@ export default function TradesDetail({
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const response = await fetch('/api/auth/me', { credentials: 'include' });
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const response = await fetch(`${apiUrl}/api/auth/me`, { credentials: 'include' });
         if (response.ok) {
           const userData = await response.json();
           setCurrentUser(userData);
@@ -512,7 +513,8 @@ export default function TradesDetail({
         throw new Error('No se encontró el ID de la conversación');
       }
       // 3. Ejecutar el intercambio
-      const executeResponse = await fetch('/api/execute-trade', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const executeResponse = await fetch(`${apiUrl}/api/execute-trade`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
