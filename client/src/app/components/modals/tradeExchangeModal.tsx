@@ -72,7 +72,7 @@ export default function TradeExchangeModal({
     return (card._id || card.id || (card as any).cardId || '').toString();
   }, []);
   const getCardKeys = useCallback((card: Card) => {
-    const keys = [card._id, card.id, (card as any).cardId, card.tcgdexId];
+    const keys = [card._id, card.id, (card as any).cardId, (card as any).tcgdexId];    
     return keys.filter(Boolean).map((k) => k!.toString());
   }, []);
   useEffect(() => {
