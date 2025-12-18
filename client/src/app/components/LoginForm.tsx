@@ -2,11 +2,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // <-- 1. IMPORTAR EL ROUTER
+import { useRouter } from 'next/navigation';
 import { useTranslations } from '@/hooks/useTranslations';
 import LanguageSwitcher from './LanguageSwitcher';
 export default function LoginForm() {
-  // --- Estados (Tu lógica está perfecta) ---
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState(''); 
   const [error, setError] = useState(''); 
@@ -23,8 +22,8 @@ export default function LoginForm() {
         return;
     }
     try {
-      // --- 3. CAMBIO CLAVE: Usar la ruta relativa para el proxy ---
-      const response = await fetch('/api/auth/login', { 
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/auth/login`, { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' }, 
         body: JSON.stringify({ email, password }), 

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useTranslations } from '@/hooks/useTranslations';
 import LanguageSwitcher from './LanguageSwitcher';
 // URL de la API (Asegúrate que apunta a 'register')
-const API_URL = 'http://localhost:3001/api/auth/register';
+//const API_URL = 'http://localhost:3001/api/auth/register';
 export default function RegisterForm() {
   // --- LÓGICA DE ESTADOS (Con 'username', 'email', 'password') ---
   const [username, setUsername] = useState(''); 
@@ -25,7 +25,8 @@ export default function RegisterForm() {
         return;
     }
     try {
-      const response = await fetch('/api/auth/register', { 
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/auth/register`, { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' }, 
         body: JSON.stringify({ username, email, password }), 
