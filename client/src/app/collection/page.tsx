@@ -6,9 +6,11 @@ import FilterSidebar from '@/app/components/collection/FilterSidebar';
 import CardGrid from '@/app/components/collection/CardGrid';
 import AddCardModal from '@/app/components/modals/addCardModal';
 import CardDetailModal from '../components/modals/CardDetailModal';
-import Loader from '../components/ui/loader';
-import NotFoundError from '../components/ui/notfoundError';
+import Loader from '@/app/components/ui/loader';
+import NotFoundError from '@/app/components/ui/notfoundError';
 import { useTranslations } from '@/hooks/useTranslations';
+import { useParams } from 'next/navigation';
+import { Suspense } from 'react';
 interface Card {
   id: string; // MongoDB _id
   tcgId?: string; // API TCG id
@@ -45,7 +47,7 @@ const fixImageUrl = (url?: string) => {
   }
   return url;
 };
-export default function CollectionPage() {
+export function CollectionContent() {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams(); 
@@ -409,5 +411,16 @@ export default function CollectionPage() {
         cardId={selectedCardId}
       />
     </div>
+  );
+}
+export default function CollectionPage() {
+  return (
+    // El fallback es lo que se ve mientras se leen los parámetros de la URL
+    // <Suspense fallback={<div className="flex justify-center p-10">  </div>}>
+    //   <CollectionContent />
+    // </Suspense>
+    <Suspense fallback={<div className="flex justify-center p-10">Cargando colección...</div>}>
+      <CollectionContent />
+    </Suspense>
   );
 }
