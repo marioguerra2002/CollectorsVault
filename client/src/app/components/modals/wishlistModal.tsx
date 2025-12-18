@@ -31,7 +31,9 @@ export default function AddWishlistModal({ isOpen, onClose, onAdd }: AddWishlist
     setHasSearched(true);
     setIsSearching(true);
     try {
-      const response = await fetch(`https://api.tcgdex.net/v2/en/cards?name=${searchTerm}`);
+      const response = await fetch(`https://api.tcgdex.net/v2/en/cards?name=${searchTerm}`, {
+        credentials: 'include'
+      });
       const data = await response.json();
       const mappedResults = (data || [])
         .filter((c: any) => c.image)

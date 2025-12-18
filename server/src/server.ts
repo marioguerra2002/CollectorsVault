@@ -39,7 +39,7 @@ app.use(cors({
   origin: ['http://localhost:3000', 'http://localhost:5173', 'https://collectorsvault.vercel.app', process.env.CLIENT_ORIGIN || 'http://localhost:3000' ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
 }));
 
 /**
@@ -107,7 +107,8 @@ io.on('connection', (socket) => {
           body: JSON.stringify({
             kind: msg.kind,
             payload: msg.payload
-          })
+          }),
+          credentials: 'include'
         });
         if (response.ok) {
         } else {

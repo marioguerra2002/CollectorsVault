@@ -53,7 +53,9 @@ export default function WishlistPage() {
     try {
       // LLAMADA AL BACKEND: GET /api/wishlist
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const response = await fetch(`${apiUrl}/api/wishlist`);
+      const response = await fetch(`${apiUrl}/api/wishlist`, {
+        credentials: 'include'
+      });
       if (response.status === 401) {
         router.push('/login');
         return;
@@ -102,7 +104,8 @@ export default function WishlistPage() {
       const res = await fetch(`${apiUrl}/api/wishlist`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cardId: cardApiId }) // Enviamos solo el ID
+        body: JSON.stringify({ cardId: cardApiId }), // Enviamos solo el ID
+        credentials: 'include'
       });
       if (!res.ok) {
         const errorData = await res.json();
@@ -122,7 +125,7 @@ export default function WishlistPage() {
     const idString = String(cardId);
     try {
       // LLAMADA AL BACKEND: DELETE /api/wishlist/:id
-      const res = await fetch(`/api/wishlist/${idString}`, { method: 'DELETE' });
+      const res = await fetch(`/api/wishlist/${idString}`, { method: 'DELETE', credentials: 'include' });
       if (!res.ok) throw new Error('Error al eliminar');
       setCards(prev => prev.filter(c => c.id !== idString));
     } catch (err) {

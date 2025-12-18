@@ -20,7 +20,9 @@ export default function ExplorePage() {
     setLoading(true);
     setHasSearched(true);
     try {
-      const res = await fetch(`/api/users/search?q=${encodeURIComponent(searchTerm)}`);
+      const res = await fetch(`/api/users/search?q=${encodeURIComponent(searchTerm)}`, {
+        credentials: 'include'
+      });
       if (res.ok) {
         const data = await res.json();
         setResults(data);

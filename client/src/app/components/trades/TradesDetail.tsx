@@ -276,6 +276,7 @@ export default function TradesDetail({
       // Cargar las cartas del proposer
       const proposerCardsPromises = (receivedProposal.proposer?.cards || []).map(card => 
         fetchCardDetails(card.cardId, receivedProposal.proposer?.userId || '')
+        
       );
       const proposerCards = await Promise.all(proposerCardsPromises);
       // Cargar las cartas del receiver

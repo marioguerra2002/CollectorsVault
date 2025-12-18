@@ -23,7 +23,10 @@ export default function ProfilePage() {
     const fetchUserData = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const res = await fetch(`${apiUrl}/api/auth/me`);
+        const res = await fetch(`${apiUrl}/api/auth/me`, {
+          credentials: 'include'
+        });
+        
         if (res.ok) {
           const data = await res.json();
           const userData = {
@@ -62,6 +65,7 @@ export default function ProfilePage() {
           username: formData.username,
           profileImageUrl: formData.avatarUrl
         }),
+        credentials: 'include'
       });
       const data = await res.json();
       if (res.ok) {

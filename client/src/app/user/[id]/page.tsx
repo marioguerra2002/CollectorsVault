@@ -76,7 +76,9 @@ export default function CollectionPage() {
   const fetchTargetUsername = async (userId: string) => {
     try {
       // Endpoint /api/users/:userId devuelve username y profileImageUrl (lo creamos en un paso anterior)
-      const res = await fetch(`/api/users/${userId}`); 
+      const res = await fetch(`/api/users/${userId}`, {
+        credentials: 'include'
+      });
       if (res.ok) {
         const data = await res.json();
         setTargetUsername(data.username);
@@ -108,7 +110,9 @@ export default function CollectionPage() {
   const reloadCards = async () => {
     try {
       const url = targetUserId ? `/api/collection/${targetUserId}` : '/api/collection';
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        credentials: 'include'
+      });
       if (response.ok) {
         const data = await response.json();
         const mappedCards = (Array.isArray(data) ? data : []).map((c: ServerCard) => ({
@@ -194,6 +198,7 @@ export default function CollectionPage() {
         const response = await fetch(url, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
         });
         if (response.status === 401) {
           router.push('/login');
@@ -250,6 +255,7 @@ export default function CollectionPage() {
           isTradable: !currentStatus, // El nuevo estado
           category: category // Pasamos la categoría al backend
         }),
+        credentials: 'include'
       });
       if (!res.ok) {
         const errorData = await res.json();
@@ -302,7 +308,8 @@ export default function CollectionPage() {
       const res = await fetch(`/api/cards/${idString}`, { 
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category: category }) 
+        body: JSON.stringify({ category: category }) ,
+        credentials: 'include'
       });
       if (!res.ok) throw new Error('Error al eliminar');
       setCards(prev => prev.filter(c => c.id !== idString));

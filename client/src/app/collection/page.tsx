@@ -75,7 +75,9 @@ export function CollectionContent() {
   const fetchTargetUsername = async (userId: string) => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const res = await fetch(`${apiUrl}/api/users/${userId}`);
+      const res = await fetch(`${apiUrl}/api/users/${userId}`, {
+        credentials: 'include'
+      });
       if (res.ok) {
         const data = await res.json();
         setTargetUsername(data.username);
@@ -90,7 +92,9 @@ export function CollectionContent() {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
       const url = targetUserId ? `${apiUrl}/api/collection?userId=${targetUserId}` : `${apiUrl}/api/collection`;
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        credentials: 'include'
+      });
       if (response.ok) {
         const data = await response.json();
         const mappedCards = (Array.isArray(data) ? data : []).map((c: ServerCard) => ({
@@ -179,6 +183,7 @@ export function CollectionContent() {
         const response = await fetch(url, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
         });
         if (response.status === 401) {
           router.push('/login');
@@ -242,6 +247,7 @@ export function CollectionContent() {
           isTradable: !currentStatus, // El nuevo estado
           category: category // Pasamos la categoría al backend
         }),
+        credentials: 'include'
       });
       if (!res.ok) {
         const errorData = await res.json();
@@ -294,7 +300,8 @@ export function CollectionContent() {
       const res = await fetch(`${apiUrl}/api/cards/${idString}`, { 
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category: category }) 
+        body: JSON.stringify({ category: category }) ,
+        credentials: 'include'
       });
       if (!res.ok) {
         const errorData = await res.json();

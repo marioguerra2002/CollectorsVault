@@ -18,7 +18,10 @@ export default function ProfileCard() {
     const fetchUserData = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        const res = await fetch(`${apiUrl}/api/auth/me`);
+        const res = await fetch(`${apiUrl}/api/auth/me`, {
+          credentials: 'include'
+        });
+        
         if (res.ok) {
           const data = await res.json();
           const userData = {
@@ -55,6 +58,7 @@ export default function ProfileCard() {
           username: formData.username,
           profileImageUrl: formData.avatarUrl
         }),
+        credentials: 'include'
       });
       const data = await res.json();
       if (res.ok) {
@@ -81,7 +85,8 @@ export default function ProfileCard() {
   const handleLogout = async () => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      await fetch(`${apiUrl}/api/auth/logout`, { method: 'POST' });
+      await fetch(`${apiUrl}/api/auth/logout`, { method: 'POST', credentials: 'include' });
+      
       // No importa si la petición falla, redirigimos igual para "sacar" al usuario
       router.push('/login');
     } catch (error) {
