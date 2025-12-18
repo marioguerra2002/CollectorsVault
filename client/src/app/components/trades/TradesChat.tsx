@@ -100,7 +100,7 @@ export default function TradesChat({
       }
     } else if (!externalSocket) {
       // Crear un nuevo socket si no hay socket externo (fallback)
-      socketInstance = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000', {
+      socketInstance = io(process.env.NEXT_PUBLIC_API_URL || 'https://collectorsvault.onrender.com', {
         withCredentials: true,
       });
       socketInstance.on('connect', () => {

@@ -126,7 +126,7 @@ export default function ExchangesPage() {
   useEffect(() => {
     if (!currentUserId) return;
     
-    const socketInstance = io(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000', {
+    const socketInstance = io(process.env.NEXT_PUBLIC_API_URL || 'https://collectorsvault.onrender.com', {
       withCredentials: true,
     });
     
